@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountSystem.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "AccountAdmin")]
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class ValuesController : ControllerBase
     {
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            return StatusCode(400, "test");
+            //return new string[] { "value1", "value2" };
         }
 
         // GET api/values/5
