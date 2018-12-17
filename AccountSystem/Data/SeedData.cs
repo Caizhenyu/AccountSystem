@@ -55,6 +55,8 @@ namespace AccountSystem.Data
 
                         result = userMgr.AddClaimsAsync(caizy, new Claim[]{
                             new Claim(JwtClaimTypes.Name, "caizy"),
+                            new Claim(JwtClaimTypes.Email, "caizy@xxmail.com"),
+                            new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean)
                         }).Result;
                         if (!result.Succeeded)
                         {

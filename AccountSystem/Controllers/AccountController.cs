@@ -66,7 +66,7 @@ namespace AccountSystem.Controllers
             }
             var tokenClient = new TokenClient(disco.TokenEndpoint, model.ClientId, model.ClientSecret);
             var tokenResponse = await tokenClient.RequestResourceOwnerPasswordAsync(user.UserName, model.Password, model.Scope);
-
+           
             if (tokenResponse.IsError)
             {
                 _logger.LogInformation("token error" + tokenResponse.Error);

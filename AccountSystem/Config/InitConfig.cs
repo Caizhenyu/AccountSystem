@@ -26,7 +26,7 @@ namespace AccountSystem.Config
             return new List<ApiResource>
             {
                 new ApiResource("Web.Portal", "Portal"),
-                new ApiResource("AccountSystem", "Account"),
+                new ApiResource("AccountSystem", "Account", new[]{ JwtClaimTypes.Name, JwtClaimTypes.Role }),
                 new ApiResource("Web.Manager", "Manager")
             };
         }
