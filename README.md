@@ -1,6 +1,8 @@
+
 # AccountSystem
 本项目为一个完整的、基于实用的、可直接使用的账号认证授权管理系统。
 项目采用 IdentityServer4 + .net core Identity + EF 的模式。
+迁移文件已经生成，clone 后 update 即可使用。
 
 项目默认需额外增加的 Claim 包括 name、role。
 
