@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AccountSystem.Controllers
 {
-    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "AccountAdmin")]
+
     [Route("api/Account")]
     public class AccountController : ControllerBase
     {
@@ -49,20 +49,20 @@ namespace AccountSystem.Controllers
                 {
                     Tip = ModelState.Keys.FirstOrDefault() + "错误"
                 };
-                return BadRequest(new ApiResult() { data = Tip, error_Code = 400, msg = "参数错误", request = "Post /api/account/login" });
+                return BadRequest(new ApiResult() { Data = Tip, Error_Code = 400, Msg = "参数错误", Request = "Post /api/account/login" });
             }
             // discover endpoints from metadata
             var disco = await DiscoveryClient.GetAsync(model.Authority);
             if (disco.IsError)
             {
-                return BadRequest(new ApiResult() { data = disco.Error, error_Code = 400, msg = "参数错误", request = "Post /api/account/login" });
+                return BadRequest(new ApiResult() { Data = disco.Error, Error_Code = 400, Msg = "参数错误", Request = "Post /api/account/login" });
             }
             _logger.LogInformation("discovery disco");
 
             var user = await _userManager.FindByNameAsync(model.PhoneNumber);
             if(user == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{model.PhoneNumber}未注册", request = "Post /api/account/login" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{model.PhoneNumber}未注册", Request = "Post /api/account/login" });
             }
             var tokenClient = new TokenClient(disco.TokenEndpoint, model.ClientId, model.ClientSecret);
             var tokenResponse = await tokenClient.RequestResourceOwnerPasswordAsync(user.UserName, model.Password, model.Scope);
@@ -74,7 +74,7 @@ namespace AccountSystem.Controllers
 
             if(string.IsNullOrEmpty(tokenResponse.AccessToken))
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "用户名或密码错误", request = "Post /api/account/login" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "用户名或密码错误", Request = "Post /api/account/login" });
             }
             else
             {
@@ -82,7 +82,7 @@ namespace AccountSystem.Controllers
                 {
                     AccessToken = tokenResponse.TokenType + " " + tokenResponse.AccessToken
                 };
-                return Ok(new ApiResult() { data = accessToken, error_Code = 0, msg = "认证成功", request = "Post /api/account/login" });
+                return Ok(new ApiResult() { Data = accessToken, Error_Code = 0, Msg = "认证成功", Request = "Post /api/account/login" });
             }            
         }
 
@@ -92,27 +92,27 @@ namespace AccountSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = ModelState.Keys.FirstOrDefault() + "错误", request = "Post /api/account/register" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = ModelState.Keys.FirstOrDefault() + "错误", Request = "Post /api/account/register" });
             }
 
             var oldUser = await _userManager.FindByNameAsync(model.PhoneNumber);
             if (oldUser != null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{model.PhoneNumber}已经注册", request = "Post /api/account/register" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{model.PhoneNumber}已经注册", Request = "Post /api/account/register" });
             }
 
             var verifyRecord = _applicationDbContext.SMSVerifyRecord.OrderByDescending(r => r.Id).FirstOrDefault(v => v.PhoneNumber == model.PhoneNumber && v.Type == model.Type && v.Valid);
             if (verifyRecord == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{model.PhoneNumber}未获取验证码", request = "Post /api/account/register" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{model.PhoneNumber}未获取验证码", Request = "Post /api/account/register" });
             }
             if (verifyRecord.Code != model.VerifyCode)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "验证码已失效，请重新获取", request = "Post /api/account/register" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "验证码已失效，请重新获取", Request = "Post /api/account/register" });
             }
             if (verifyRecord.Deadline < DateTime.Now)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "验证码已过期，请重新获取", request = "Post /api/account/register" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "验证码已过期，请重新获取", Request = "Post /api/account/register" });
             }
 
             var newUser = new IdentityUser()
@@ -126,7 +126,7 @@ namespace AccountSystem.Controllers
                 {
                     Tip = result.Errors
                 };
-                return BadRequest(new ApiResult() { data = Tip, error_Code = 400, msg = "注册失败", request = "Post /api/account/register" });
+                return BadRequest(new ApiResult() { Data = Tip, Error_Code = 400, Msg = "注册失败", Request = "Post /api/account/register" });
             }
             if(!string.IsNullOrEmpty(model.Role))
             {
@@ -148,7 +148,7 @@ namespace AccountSystem.Controllers
                 _logger.LogError(ex.InnerException.Message);
             }
 
-            return Ok(new ApiResult() { data = null, error_Code = 0, msg = "注册成功", request = "Post /api/account/register"});
+            return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = "注册成功", Request = "Post /api/account/register"});
         }
 
         [AllowAnonymous]
@@ -157,27 +157,27 @@ namespace AccountSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = ModelState.Keys.FirstOrDefault() + "错误", request = "Post /api/account/password" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = ModelState.Keys.FirstOrDefault() + "错误", Request = "Post /api/account/password" });
             }
 
             var user = await _userManager.FindByNameAsync(model.PhoneNumber);
             if (user == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{model.PhoneNumber}未注册", request = "Post /api/account/password" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{model.PhoneNumber}未注册", Request = "Post /api/account/password" });
             }
 
             var verifyRecord = _applicationDbContext.SMSVerifyRecord.OrderByDescending(r => r.Id).FirstOrDefault(v => v.PhoneNumber == model.PhoneNumber && v.Type == model.Type && v.Valid);
             if (verifyRecord == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{model.PhoneNumber}未获取验证码", request = "Post /api/account/password" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{model.PhoneNumber}未获取验证码", Request = "Post /api/account/password" });
             }
             if (verifyRecord.Code != model.VerifyCode)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "验证码已失效，请重新获取", request = "Post /api/account/password" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "验证码已失效，请重新获取", Request = "Post /api/account/password" });
             }
             if (verifyRecord.Deadline < DateTime.Now)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "验证码已过期，请重新获取", request = "Post /api/account/password" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "验证码已过期，请重新获取", Request = "Post /api/account/password" });
             }
 
             verifyRecord.Valid = false;
@@ -195,12 +195,12 @@ namespace AccountSystem.Controllers
 
             if (result.Succeeded)
             {
-                return Ok(new ApiResult() { data = null, error_Code = 0, msg = $"{model.PhoneNumber}修改密码成功", request = "Post /api/account/password" });
+                return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = $"{model.PhoneNumber}修改密码成功", Request = "Post /api/account/password" });
             }
             else
             {
                 _logger.LogError($"{model.PhoneNumber}修改密码失败", result.Errors);
-                return BadRequest(new ApiResult() { data = result.Errors, error_Code = 0, msg = $"{model.PhoneNumber}修改密码失败", request = "Post /api/account/password" });
+                return BadRequest(new ApiResult() { Data = result.Errors, Error_Code = 0, Msg = $"{model.PhoneNumber}修改密码失败", Request = "Post /api/account/password" });
             }
         }
     }

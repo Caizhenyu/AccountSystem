@@ -38,17 +38,17 @@ namespace AccountSystem.Controllers
             var result = await _smsSender.SendVerifySMSAsync(phoneNumber, templateId, new[] { random, exp }, type);
             if(result.result == 0)
             {
-                return Ok(new ApiResult() { data = null, error_Code = 0, msg = "验证短信发送成功", request = "Post /api/verify/sms" });
+                return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = "验证短信发送成功", Request = "Post /api/verify/sms" });
             }
             else if(result.result == 1016)
             {
                 _logger.LogError(result.result.ToString(), result);
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "手机号格式错误", request = "Post /api/verify/sms" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "手机号格式错误", Request = "Post /api/verify/sms" });
             }
             else if((result.result >= 1022 && result.result <= 1026) || result.result == 1013)
             {
                 _logger.LogError(result.result.ToString(), result);
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "单个手机号下发短信条数超过设定的上限，请联系客服", request = "Post /api/verify/sms" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "单个手机号下发短信条数超过设定的上限，请联系客服", Request = "Post /api/verify/sms" });
             }
             else if(result.result == 1008)
             {

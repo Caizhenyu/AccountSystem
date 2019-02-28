@@ -40,12 +40,12 @@ namespace AccountSystem.Controllers
             var client = await _clientStore.FindEnabledClientByIdAsync(clientScope.Client);
             if(client == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{clientScope.Client}不存在或不可用", request = "Post /api/client/scope" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{clientScope.Client}不存在或不可用", Request = "Post /api/client/scope" });
             }
             var scope = await _resourceStore.FindApiResourceAsync(clientScope.Scope);
             if(scope == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{clientScope.Scope}不存在或不可用", request = "Post /api/client/scope" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{clientScope.Scope}不存在或不可用", Request = "Post /api/client/scope" });
             }
 
             var currentClient = _configurationDbContext.Clients.Include(c => c.AllowedScopes).FirstOrDefault(c => c.ClientId == clientScope.Client);
@@ -61,7 +61,7 @@ namespace AccountSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             
-            return Ok(new ApiResult() { data = null, error_Code = 0, msg = $"{clientScope.Client}添加{clientScope.Scope}成功", request = "Post /api/client/scope" });
+            return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = $"{clientScope.Client}添加{clientScope.Scope}成功", Request = "Post /api/client/scope" });
         }
 
         [HttpPost("Lifetime")]
@@ -69,18 +69,18 @@ namespace AccountSystem.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = ModelState.Keys.FirstOrDefault() + "错误", request = "Post /api/client/lifetime" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = ModelState.Keys.FirstOrDefault() + "错误", Request = "Post /api/client/lifetime" });
             }
 
             var client = await _clientStore.FindEnabledClientByIdAsync(clientLifetime.Client);
             if(client == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = $"{clientLifetime.Client}不存在或不可用", request = "Post /api/client/lifetime" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = $"{clientLifetime.Client}不存在或不可用", Request = "Post /api/client/lifetime" });
             }
 
             if(clientLifetime.Lifetime == client.AccessTokenLifetime)
             {
-                return Ok(new ApiResult() { data = null, error_Code = 0, msg = $"{clientLifetime.Client}的 Token 过期时间已改为{clientLifetime.Lifetime}", request = "Post /api/cleint/lifetime" });
+                return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = $"{clientLifetime.Client}的 Token 过期时间已改为{clientLifetime.Lifetime}", Request = "Post /api/cleint/lifetime" });
             }
 
             client.AccessTokenLifetime = clientLifetime.Lifetime;
@@ -95,7 +95,7 @@ namespace AccountSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return Ok(new ApiResult() { data = null, error_Code = 0, msg = $"{clientLifetime.Client}的 Token 过期时间已改为{clientLifetime.Lifetime}", request = "Post /api/cleint/lifetime" });
+            return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = $"{clientLifetime.Client}的 Token 过期时间已改为{clientLifetime.Lifetime}", Request = "Post /api/cleint/lifetime" });
         }
     }
 }

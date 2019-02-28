@@ -56,7 +56,7 @@ namespace AccountSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return Ok(new ApiResult() { data = null, error_Code = 0, msg = $"{apiName}添加Name、Role成功" });
+            return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = $"{apiName}添加Name、Role成功" });
         }
     }
 }

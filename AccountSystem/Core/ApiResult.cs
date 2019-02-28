@@ -7,9 +7,9 @@ namespace AccountSystem.Core
 {
     public class ApiResult
     {
-        public object data { get; set; }
-        public int error_Code { get; set; }
-        public string msg { get; set; }
-        public string request { get; set; }
+        public object Data { get; set; }
+        public int Error_Code { get; set; }
+        public string Msg { get; set; }
+        public string Request { get; set; }
     }
 }

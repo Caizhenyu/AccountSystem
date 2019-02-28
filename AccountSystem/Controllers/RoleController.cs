@@ -30,11 +30,11 @@ namespace AccountSystem.Controllers
         {
             if(string.IsNullOrEmpty(role))
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "请求角色不能为空", request = "Get /api/role/user" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "请求角色不能为空", Request = "Get /api/role/user" });
             }
             if(!_roleManager.RoleExistsAsync(role).Result)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "请求角色不存在", request = "Get /api/role/user" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "请求角色不存在", Request = "Get /api/role/user" });
             }
 
             var users = await _userManager.GetUsersInRoleAsync(role);
@@ -46,7 +46,7 @@ namespace AccountSystem.Controllers
                 PhoneNumberList = phoneNumberList
             };
 
-            return Ok(new ApiResult() { data = PhoneNumberList, error_Code = 0, msg = $"获取{role}成员列表成功", request = "Get /api/role/user" });
+            return Ok(new ApiResult() { Data = PhoneNumberList, Error_Code = 0, Msg = $"获取{role}成员列表成功", Request = "Get /api/role/user" });
         }
 
         [HttpPost("User")]
@@ -56,7 +56,7 @@ namespace AccountSystem.Controllers
 
             if (user == null)
             {
-                return BadRequest(new ApiResult() { data = null, error_Code = 400, msg = "未找到该用户", request = "Post /api/role/user" });
+                return BadRequest(new ApiResult() { Data = null, Error_Code = 400, Msg = "未找到该用户", Request = "Post /api/role/user" });
             }
 
             if (!string.IsNullOrEmpty(model.Role))
@@ -69,7 +69,7 @@ namespace AccountSystem.Controllers
                 var result = await _userManager.AddToRoleAsync(user, model.Role);
                 if(result.Succeeded)
                 {
-                    return Ok(new ApiResult() { data = null, error_Code = 0, msg = $"{model.PhoneNumber}添加{model.Role}成功", request = "Post /api/role/user" });
+                    return Ok(new ApiResult() { Data = null, Error_Code = 0, Msg = $"{model.PhoneNumber}添加{model.Role}成功", Request = "Post /api/role/user" });
                 }
             }
 

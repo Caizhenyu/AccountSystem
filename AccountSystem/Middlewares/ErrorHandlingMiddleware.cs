@@ -62,7 +62,7 @@ namespace AccountSystem.Middlewares
                         msg = "未授权";
                         break;
                     case 404:
-                        msg = "未找到服务";
+                        msg = "未找到服务/资源";
                         break;
                     case 500:
                     case 502:
@@ -85,7 +85,10 @@ namespace AccountSystem.Middlewares
         //异常错误信息捕获，将错误信息用Json方式返回
         private static Task HandleExceptionAsync(HttpContext context, int statusCode, string msg)
         {
-            var result = JsonConvert.SerializeObject(new ApiResult() { data = null, error_Code = statusCode, msg = msg, request = context.Request.Method + context.Request.Path});
+            var result = JsonConvert.SerializeObject(new ApiResult { Data = null, Error_Code = statusCode, Msg = msg, Request = context.Request.Method + " " + context.Request.Path },
+                Formatting.Indented,
+                new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() }
+                );
             //context.Response.ContentType = "application/json;charset=utf-8";
             return context.Response.WriteAsync(result);
         }
